@@ -43,7 +43,8 @@ jobs:
 
       - name: Copy Content
         run: |
-          cp -r content-temp/content quartz-temp/content
+          mkdir -p quartz-temp/content
+          cp -r content-temp/Sessions quartz-temp/content/
           cd quartz-temp
           npm run quartz -- build
 
