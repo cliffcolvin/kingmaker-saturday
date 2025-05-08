@@ -45,9 +45,9 @@ jobs:
         run: |
           mkdir -p quartz-temp/content
           cp -r content-temp/Sessions quartz-temp/content/
-          cp content-temp/quartz.config.ts quartz-temp/
           cd quartz-temp
-          npm run quartz -- build
+          npm run quartz -- create --ci
+          npm run quartz -- build --baseUrl cliffcolvin.github.io/kingmaker-saturday
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
