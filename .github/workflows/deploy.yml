@@ -19,26 +19,38 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Quartz
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          repository: jackyzha0/quartz
+          path: quartz-temp
+
+      - name: Checkout Content
+        uses: actions/checkout@v4
+        with:
+          path: content-temp
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: ./quartz-temp/package-lock.json
 
       - name: Install Dependencies
+        working-directory: ./quartz-temp
         run: npm install
 
-      - name: Build Quartz
-        run: npx quartz build
+      - name: Copy Content
+        run: |
+          cp -r content-temp/content quartz-temp/content
+          cd quartz-temp
+          npm run quartz -- build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: quartz-temp/public
 
   deploy:
     needs: build
