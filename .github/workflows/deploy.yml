@@ -41,13 +41,86 @@ jobs:
         working-directory: ./quartz-temp
         run: npm install
 
-      - name: Copy Content and Config
+      - name: Copy Content and Create Config
         run: |
           mkdir -p quartz-temp/content
           cp -r content-temp/Sessions quartz-temp/content/
           cd quartz-temp
-          npm run quartz -- create --ci
-          npm run quartz -- build --baseUrl cliffcolvin.github.io/kingmaker-saturday
+          cat > quartz.config.ts << 'EOL'
+          import { QuartzConfig } from "./quartz/cfg"
+          import * as Plugin from "./quartz/plugins"
+
+          const config: QuartzConfig = {
+            pageTitle: "Kingmaker Campaign Notes",
+            enableSPA: true,
+            enablePopovers: true,
+            analytics: null,
+            locale: "en-US",
+            baseUrl: "cliffcolvin.github.io/kingmaker-saturday",
+            ignorePatterns: ["private", "drafts", "templates"],
+            defaultDateType: "published",
+            theme: {
+              typography: {
+                header: "Schibsted Grotesk",
+                body: "Source Sans Pro",
+                code: "IBM Plex Mono",
+              },
+              colors: {
+                lightMode: {
+                  light: "#faf8f8",
+                  lightgray: "#e5e5e5",
+                  gray: "#b8b8b8",
+                  darkgray: "#4e4e4e",
+                  dark: "#2b2b2b",
+                  secondary: "#284b63",
+                  tertiary: "#84a59d",
+                  highlight: "rgba(143, 159, 169, 0.15)",
+                },
+                darkMode: {
+                  light: "#161618",
+                  lightgray: "#393639",
+                  gray: "#646464",
+                  darkgray: "#d4d4d4",
+                  dark: "#ebebec",
+                  secondary: "#7b97aa",
+                  tertiary: "#84a59d",
+                  highlight: "rgba(143, 159, 169, 0.15)",
+                },
+              },
+            },
+            plugins: {
+              transformers: [
+                Plugin.FrontMatter(),
+                Plugin.TableOfContents(),
+                Plugin.CreatedModifiedDate({
+                  priority: ["frontmatter", "filesystem"],
+                }),
+                Plugin.Latex({ renderEngine: "katex" }),
+                Plugin.SyntaxHighlighting(),
+                Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: true }),
+                Plugin.GitHubFlavoredMarkdown(),
+                Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
+                Plugin.Description(),
+              ],
+              filters: [
+                Plugin.RemoveDrafts(),
+              ],
+              emitters: [
+                Plugin.AsciiDoc(),
+                Plugin.ContentPage(),
+                Plugin.FolderPage(),
+                Plugin.TagPage(),
+                Plugin.ContentIndex(),
+                Plugin.Assets(),
+                Plugin.Static(),
+                Plugin.NotFoundPage(),
+              ],
+            },
+          }
+
+          export default config
+          EOL
+          npm run quartz -- build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
