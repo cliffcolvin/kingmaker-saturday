@@ -1,23 +1,23 @@
-import { QuartzConfig } from "./quartz/cfg"
-import * as Plugin from "./quartz/plugins"
+import { QuartzConfig } from "./quartz-temp/quartz.config"
 
 const config: QuartzConfig = {
-  configuration: {
-    pageTitle: "Kingmaker Campaign Notes",
-    enableSPA: true,
-    enablePopovers: true,
-    analytics: null,
-    locale: "en-US",
-    baseUrl: "cliffcolvin.github.io/kingmaker-saturday",
-    ignorePatterns: ["private", "templates", ".obsidian"],
-    defaultDateType: "created",
-    theme: {
-      typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
-      },
-      colors: {
+  pageTitle: "Kingmaker Campaign Notes",
+  enableSPA: true,
+  enablePopovers: true,
+  analytics: null,
+  locale: "en-US",
+  baseUrl: "cliffcolvin.github.io/kingmaker-saturday",
+  ignorePatterns: ["private", "drafts", "templates"],
+  defaultDateType: "published",
+  theme: {
+    cdnCaching: true,
+    typography: {
+      header: "Schibsted Grotesk",
+      body: "Source Sans Pro",
+      code: "IBM Plex Mono",
+    },
+    colors: {
+      lightMode: {
         light: "#faf8f8",
         lightgray: "#e5e5e5",
         gray: "#b8b8b8",
@@ -27,34 +27,37 @@ const config: QuartzConfig = {
         tertiary: "#84a59d",
         highlight: "rgba(143, 159, 169, 0.15)",
       },
+      darkMode: {
+        light: "#161618",
+        lightgray: "#393639",
+        gray: "#646464",
+        darkgray: "#d4d4d4",
+        dark: "#ebebec",
+        secondary: "#7b97aa",
+        tertiary: "#84a59d",
+        highlight: "rgba(143, 159, 169, 0.15)",
+      },
     },
   },
   plugins: {
     transformers: [
-      Plugin.FrontMatter(),
-      Plugin.TableOfContents(),
-      Plugin.CreatedModifiedDate({
-        priority: ["frontmatter", "filesystem"],
-      }),
-      Plugin.Latex({ renderEngine: "katex" }),
-      Plugin.SyntaxHighlighting(),
-      Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: true }),
-      Plugin.GitHubFlavoredMarkdown(),
-      Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
-      Plugin.Description(),
+      "frontmatter",
+      "description",
+      "gfm",
+      "linebreaks",
+      "links",
+      "syntax",
+      "toc",
     ],
-    filters: [
-      Plugin.RemoveDrafts(),
-    ],
+    filters: ["draft"],
     emitters: [
-      Plugin.AsciiDoc(),
-      Plugin.ContentPage(),
-      Plugin.FolderPage(),
-      Plugin.TagPage(),
-      Plugin.ContentIndex(),
-      Plugin.Assets(),
-      Plugin.Static(),
-      Plugin.NotFoundPage(),
+      "contentPage",
+      "folderPage",
+      "tagPage",
+      "contentIndex",
+      "assets",
+      "static",
+      "404",
     ],
   },
 }

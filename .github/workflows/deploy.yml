@@ -41,10 +41,11 @@ jobs:
         working-directory: ./quartz-temp
         run: npm install
 
-      - name: Copy Content
+      - name: Copy Content and Config
         run: |
           mkdir -p quartz-temp/content
           cp -r content-temp/Sessions quartz-temp/content/
+          cp content-temp/quartz.config.ts quartz-temp/
           cd quartz-temp
           npm run quartz -- build
 
