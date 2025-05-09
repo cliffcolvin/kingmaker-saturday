@@ -2,7 +2,7 @@
 
 # Set paths
 VAULT_DIR=~/Dropbox/PF2e-Game
-QUARTZ_DIR=~/workspaces/ccolvin/kingmaker-saturday/quartz/content
+QUARTZ_DIR=~/workspaces/ccolvin/kingmaker-saturday/docs
 
 echo "🔍 Scanning vault for published notes..."
 echo "Looking in: $VAULT_DIR"
